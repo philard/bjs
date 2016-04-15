@@ -11,6 +11,12 @@ server.on('connection', function(client){
     client.on('stream', function(stream, meta){
         var file = fs.createWriteStream(meta.file);
         stream.pipe(file);
+        stream.on('data', function (data) {
+            stream.write({ rx: data.length / meta.size });
+        });
+        stream.on('end', function () {
+            stream.write({ end: true });
+        });
     });
 });
 

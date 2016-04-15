@@ -12,23 +12,24 @@ var server = http.createServer(app);
 var bs = BinaryServer({server: server});
 
 // Wait for new user connections
-bs.on('connection', function(client){
+bs.on('connection', function(connectedClient){
+
+    var file = fs.createReadStream(__dirname + '/public/media/flower.jpeg');
+    connectedClient.send(file);
 
     // Incoming stream from browsers
-    client.on('stream', function(stream, meta){
+    connectedClient.on('stream', function(inStream, meta){
 
-        // broadcast to all other clients
-        for(var id in bs.clients){
-            if(bs.clients.hasOwnProperty(id)){
-                var otherClient = bs.clients[id];
-                if(otherClient != client) {
-                    var send = otherClient.createStream(meta);
-                    stream.pipe(send);
-                } else {
-                    var send = otherClient.createStream();
-                    var file = fs.createReadStream(__dirname + '/public/media/ok.jpeg')
-                    file.pipe(send);
-                }
+        var client = i = 0;
+        while(client = bs.clients[i]){
+            i++;
+            if(client === connectedClient) {
+                var file = fs.createReadStream(__dirname + '/public/media/ok.jpeg')
+                var test = connectedClient.createStream();
+                file.pipe(test);
+            } else {
+                console.log('clinet send')
+                inStream.pipe(client);
             }
         }
     });
