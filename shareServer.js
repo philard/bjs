@@ -12,27 +12,35 @@ var server = http.createServer(app);
 var bs = BinaryServer({server: server});
 
 // Wait for new user connections
-bs.on('connection', function(connectedClient){
+bs.on('connection', function(connectedClient){   //  connectedClient is a binaryjs.BinaryClient
 
     var file = fs.createReadStream(__dirname + '/public/media/flower.jpeg');
     connectedClient.send(file);
 
     // Incoming stream from browsers
-    connectedClient.on('stream', function(inStream, meta){
+    connectedClient.on('stream', function(inStream, meta){ // inStream is a binaryjs.BinaryStream
 
-        var client = i = 0;
-        while(client = bs.clients[i]){
+        var i = 0;
+        while(ithClient = bs.clients[i]) {
             i++;
-            if(client === connectedClient) {
-                var file = fs.createReadStream(__dirname + '/public/media/ok.jpeg')
-                var test = connectedClient.createStream();
-                file.pipe(test);
-            } else {
-                console.log('clinet send')
-                inStream.pipe(client);
-            }
+            serve(ithClient, inStream, meta);
         }
     });
+
+    function serve(ithClient, inStream, meta) {
+        if(ithClient === connectedClient) {
+            // This client is the client transmitting data.
+            var file = fs.createReadStream(__dirname + '/public/media/ok.jpeg');
+            var imageStream = ithClient.createStream();
+            file.pipe(imageStream);
+        } else {
+            // This client will receive the inStream.
+            console.log('clinet send');
+            imageStream  = ithClient.createStream(meta);
+            inStream.pipe(imageStream);
+        }
+    }
+
 });
 
 server.listen(80);
