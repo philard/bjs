@@ -14,3 +14,5 @@ Stream images from one client to the server to the 2nd client.
 
 TODO: 
 Display the image in the 2nd client before the image has finished  streaming - before "stream.on('end')". 
+
+23th April
