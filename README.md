@@ -2,7 +2,7 @@ First succeful demo of binaryjs.
 
 server.js: 
 Run "node server". 
-Access http://localhost . 
+Access http://localhost (see shareServer.js). 
 Stream text to hard drive from the browsers client.
 
 shareServer.js: 
